@@ -1,0 +1,21 @@
+.someclass {
+    color: white;
+    background-color: white;
+}
+
+.fas {
+    font-family: "Font Awesome 5 Free", "fa-solid-900";
+}
+
+.delete {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+
+.btn-back {
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 40;
+    height: 35;
+    width: 35;
+}

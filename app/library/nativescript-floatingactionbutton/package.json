@@ -1,0 +1,104 @@
+{
+  "_from": "@nstudio/nativescript-floatingactionbutton",
+  "_id": "@nstudio/nativescript-floatingactionbutton@2.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-0PS1+uM4BGiohy/ZQW45qksnxoCYANnohvtbfEY/u8Fhs9XGkvP6Zhh6m0AdE+m6W3EVn0jO4tsQSWYNtQ+wzA==",
+  "_location": "/@nstudio/nativescript-floatingactionbutton",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@nstudio/nativescript-floatingactionbutton",
+    "name": "@nstudio/nativescript-floatingactionbutton",
+    "escapedName": "@nstudio%2fnativescript-floatingactionbutton",
+    "scope": "@nstudio",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@nstudio/nativescript-floatingactionbutton/-/nativescript-floatingactionbutton-2.0.0.tgz",
+  "_shasum": "7c3d52d62cee6818ff1ab34f425f939ef1140cc2",
+  "_spec": "@nstudio/nativescript-floatingactionbutton",
+  "_where": "C:\\Users\\deko7\\IdeaProjects\\native-script\\NgProject",
+  "author": {
+    "name": "Brad Martin",
+    "email": "bmartin@nstudio.io",
+    "url": "https://github.com/bradmartin"
+  },
+  "bugs": {
+    "url": "https://github.com/nstudio/nativescript-floatingactionbutton/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A NativeScript plugin for Material Design Floating Action Button.",
+  "devDependencies": {
+    "@nativescript/core": "^6.3.2",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.2",
+    "prettier": "^1.19.1",
+    "rimraf": "^2.6.3",
+    "tns-platform-declarations": "^6.3.2",
+    "tslint": "~6.0.0",
+    "typescript": "~3.7.4"
+  },
+  "homepage": "https://github.com/nstudio/nativescript-floatingactionbutton",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run tslint"
+    }
+  },
+  "keywords": [
+    "ecosystem:nativescript",
+    "NativeScript",
+    "javascript",
+    "material design",
+    "FAB",
+    "floating-action-button",
+    "android",
+    "ios",
+    "nStudio"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "**/*.{js, css, ts, json, scss, html, xml, md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "main": "fab",
+  "name": "@nstudio/nativescript-floatingactionbutton",
+  "nativescript": {
+    "platforms": {
+      "android": "3.0.0",
+      "ios": "3.0.0"
+    },
+    "plugin": {
+      "nan": true,
+      "pan": true,
+      "core3": "true",
+      "category": "Interface"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nstudio/nativescript-floatingactionbutton.git"
+  },
+  "scripts": {
+    "build": "npm i && tsc",
+    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**'",
+    "demo.android": "npm run setup && cd ../demo && tns run android",
+    "demo.ios": "npm run setup && cd ../demo && tns run ios",
+    "generate.typings.ios": "cd ../demo && TNS_DEBUG_METADATA_PATH=\"$(pwd)/metadata\" tns build ios && TNS_TYPESCRIPT_DECLARATIONS_PATH=\"$(pwd)/typings\" tns build ios && echo 'Now look for your library typings in demo/typings!'",
+    "make-changelog": "cd ../ && github_changelog_generator -u nstudio -p nativescript-floatingactionbutton",
+    "setup": "npm i && tsc",
+    "tsc": "tsc -skipLibCheck",
+    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\" --exclude \"*demo*/platforms/**\""
+  },
+  "typings": "index.d.ts",
+  "version": "2.0.0"
+}
