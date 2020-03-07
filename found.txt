@@ -1,0 +1,2 @@
+C:\Users\deko7\IdeaProjects\native-script-todo-app\platforms\android\build-tools\buildMetadata.log
+C:\Users\deko7\IdeaProjects\native-script-todo-app\platforms\android\build-tools\runSbg.log
