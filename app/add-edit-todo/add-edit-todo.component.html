@@ -1,64 +1,58 @@
-<ActionBar title="Add new note">
+<ActionBar [title]="isAdd ? 'Add new note' : 'Edit note'">
     <ActionItem (tap)="takePicture()" android.position="actionBar">
-        <Label
-                class="mdi"
-                fontSize="28"
-                color="white"
-                [text]="'mdi-add-a-photo' | fonticon">
-        </Label>
+        <Label class="mdi" fontSize="28" color="white" [text]="'mdi-add-a-photo' | fonticon"> </Label>
     </ActionItem>
     <ActionItem (tap)="onImageAdd()" android.position="actionBar">
-        <Label
-                class="mdi"
-                fontSize="28"
-                color="white"
-                [text]="'mdi-add-to-photos' | fonticon">
-        </Label>
+        <Label class="mdi" fontSize="28" color="white" [text]="'mdi-add-to-photos' | fonticon"> </Label>
     </ActionItem>
     <ActionItem *ngIf="isAdd" (tap)="onSave()" android.position="actionBar">
-        <Label
-                class="mdi"
-                fontSize="28"
-                color="white"
-                [text]="'mdi-save' | fonticon">
-        </Label>
+        <Label class="mdi" fontSize="28" color="white" [text]="'mdi-save' | fonticon"> </Label>
     </ActionItem>
 </ActionBar>
-<FlexboxLayout *ngIf="isSaving" tap="onOuterStackTap" style="z-index: 1000" backgroundColor="rgba(0, 0, 0, 0.2)" width="100%" height="100%" justifyContent="center">
-    <ActivityIndicator style="z-index: 1001" busy="true"  color="#8130ff" width="100" height="100">
-    </ActivityIndicator>
+<FlexboxLayout
+    *ngIf="isSaving"
+    tap="onOuterStackTap"
+    style="z-index: 1000"
+    backgroundColor="rgba(0, 0, 0, 0.2)"
+    width="100%"
+    height="100%"
+    justifyContent="center"
+>
+    <ActivityIndicator style="z-index: 1001" busy="true" color="#8130ff" width="100" height="100"> </ActivityIndicator>
 </FlexboxLayout>
 <StackLayout>
-    <StackLayout (tap)="utils.ad.dismissSoftInput();">
+    <StackLayout (tap)="utils.ad.dismissSoftInput()">
+        <FloatLabel placeholder="Title" width="360" [(value)]="todo.title" (valueChange)="saveFields()"> </FloatLabel>
         <FloatLabel
-                placeholder="Title"
-                width="360"
-                [(value)]="title"
-                (valueChange)="saveFields()">
-        </FloatLabel>
-        <FloatLabel
-                placeholder="Enter some notes..." width="360" type="view"
-                [(value)]="body"
-                (valueChange)="saveFields()">
+            placeholder="Enter some notes..."
+            width="360"
+            type="view"
+            [(value)]="todo.body"
+            (valueChange)="saveFields()"
+        >
         </FloatLabel>
     </StackLayout>
 
     <ScrollView orientation="horizontal">
         <StackLayout orientation="horizontal">
-            <AbsoluteLayout *ngFor="let image of images, let i=index">
+            <AbsoluteLayout *ngFor="let image of images; let i = index">
                 <Label
-                        style="z-index: 2"
-                        class="mdi"
-                        fontSize="30"
-                        color="#8130ff"
-                        (tap)="deleteImage(i)"
-                        [text]="'mdi-delete' | fonticon">
+                    style="z-index: 2"
+                    class="mdi"
+                    fontSize="30"
+                    color="#8130ff"
+                    (tap)="deleteImage(i)"
+                    [text]="'mdi-delete' | fonticon"
+                >
                 </Label>
                 <Image
-                        style="z-index: 1"
-                        width="200" loadMode="async" stretch="aspectFit"
-                        [src]="image"
-                        (tap)="showImage(image)">
+                    style="z-index: 1"
+                    width="200"
+                    loadMode="async"
+                    stretch="aspectFit"
+                    [src]="image"
+                    (tap)="showImage(image)"
+                >
                 </Image>
             </AbsoluteLayout>
         </StackLayout>

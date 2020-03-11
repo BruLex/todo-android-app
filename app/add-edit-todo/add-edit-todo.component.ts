@@ -1,132 +1,112 @@
-import { Component, } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { ImageAsset, knownFolders, path } from "@nativescript/core";
-import { registerElement } from "nativescript-angular/element-registry";
-import * as camera from "../library/nativescript-camera";
-import { exit } from "nativescript-exit";
-import { FilePhotoview } from "nativescript-file-photoview";
-import * as imagepicker from "nativescript-imagepicker";
-import { ImagePicker, ImagePickerMediaType } from "nativescript-imagepicker";
-import { confirm } from "tns-core-modules/ui/dialogs";
-import * as utils from "tns-core-modules/utils/utils";
-import { AppService } from "~/app.service";
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { registerElement } from '@nativescript/angular';
+import { ImageAsset } from '@nativescript/core';
+import { FilePhotoview } from 'nativescript-file-photoview';
+import * as imagepicker from 'nativescript-imagepicker';
+import { ImagePicker, ImagePickerMediaType } from 'nativescript-imagepicker';
+import { clear, getString, setString } from 'tns-core-modules/application-settings';
+import { confirm } from 'tns-core-modules/ui/dialogs';
+import * as utils from 'tns-core-modules/utils/utils';
+import { AppService } from '~/app.service';
+import { Todo } from '~/types';
+import * as camera from '../library/nativescript-camera';
 
-
-import { clear, getString, setString } from "tns-core-modules/application-settings";
-import { ComponentCanDeactivate } from "~/main.guard";
-
-registerElement("ImageSwipe", () => require("nativescript-image-swipe/image-swipe").ImageSwipe);
+registerElement('ImageSwipe', () => require('nativescript-image-swipe/image-swipe').ImageSwipe);
 
 @Component({
-    templateUrl: "./add-edit-todo.component.html",
-    styleUrls: ['./add-edit-todo.component.css'],
+    templateUrl: './add-edit-todo.component.html',
 })
-export class AddEditTodoComponent implements ComponentCanDeactivate {
-
+export class AddEditTodoComponent {
     isAdd: boolean = true;
     utils: typeof utils = utils;
-    exit: typeof exit = exit;
-    title: string = '';
-    body: string = '';
-    items: string[] = [];
     filePhotoView: FilePhotoview = new FilePhotoview();
-    editId: number = null;
+    todo: Todo = { id: null, body: '', title: '', imagesPaths: [] };
+
     isSaving: boolean = false;
 
     get images(): string[] {
-        return ((this.isAdd ? this.items : this.editId && this.appSrv.todos[this.editId].imagesPaths) || []).filter();
+        return (this.todo && this.todo.imagesPaths) || [];
     }
 
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private appSrv: AppService
-    ) {
-        if (!getString("mode")) {
+    constructor(private route: ActivatedRoute, private router: Router, private appSrv: AppService) {
+        if (!getString('mode') || (getString('mode') === 'edit' && !getString('id'))) {
             this.initCommon();
         } else {
             this.restoreData();
         }
     }
 
-    canDeactivate() : boolean {
-        console.log('canDeactivate');
-        clear();
-        this.appSrv.clearCacheFolder();
-        return true;
-    }
-
     initCommon(): void {
         clear();
+        this.appSrv.clearCacheFolder();
         this.route.data.subscribe((data): void => {
-                const mode: 'add' | 'edit' = data['mode'];
-                console.log('mode: ', mode);
-                console.log('datas: ', data);
-                this.isAdd = mode === 'add';
-                if (this.isAdd) {
-                    setString("mode", "add");
-                }
-        });
-
-        this.route.params.subscribe(param => {
-            if (!!param && !!param['id']) {
-                this.editId = this.route.root.firstChild.snapshot.params['id'];
-                this.title = this.appSrv.todos[this.editId].title;
-                this.body = this.appSrv.todos[this.editId].body;
+            const mode: 'add' | 'edit' = data['mode'];
+            this.isAdd = mode === 'add';
+            if (this.isAdd) {
+                setString('mode', mode);
+            } else {
+                this.route.params.subscribe(param => {
+                    console.log(param);
+                    if (!!param && !!param['id']) {
+                        this.todo = this.appSrv.todos.find(v => Number(v.id) === Number(param['id']));
+                    }
+                });
             }
-        })
+        });
     }
 
     restoreData(): void {
-        if (getString("mode") === 'add') {
-            this.isAdd = true;
-            this.editId = Number(getString("id"));
-            this.title = this.appSrv.todos[this.editId].title;
-            this.body = this.appSrv.todos[this.editId].body;
-            this.appSrv.copyCacheToDirectory(this.editId);
-            this.appSrv.clearCacheFolder();
-            this.appSrv.fetchFilesById(this.editId);
-        } else {
-            // restore all field data
+        if (getString('mode') === 'edit') {
             this.isAdd = false;
-            this.title = getString("title") || '';
-            this.body = getString("body") || '';
-            this.items.push(...this.appSrv.getAllCachedFiles());
+            const todo: Todo = this.appSrv.todos.find(v => Number(v.id) === Number(Number(getString('id'))));
+            console.log(getString('id'));
+            console.log(this.appSrv.todos);
+            console.log(todo);
+            this.appSrv.copyCacheToDirectory(this.todo.id);
+            this.appSrv.clearCacheFolder();
+            this.appSrv.fetchFilesById(this.todo.id);
+        } else {
+            this.isAdd = true;
+            this.todo.title = getString('title') || '';
+            this.todo.body = getString('body') || '';
+            this.todo.imagesPaths.push(...this.appSrv.getAllCachedFiles());
         }
     }
 
     takePicture(): void {
         if (!this.isAdd) {
-            setString("mode", 'add');
-            setString("id", `${ this.editId }`);
+            setString('mode', 'add');
+            setString('id', `${ this.todo.id }`);
         }
-        this.appSrv.clearCacheFolder();
         camera.requestPermissions().then(
             () => {
-                camera.takePicture({
+                const filename: string = `${ this.appSrv.uniqueID() }.jpg`;
+                camera
+                    .takePicture({
                         saveToGallery: false,
-                        saveAppPath: path.join(knownFolders.currentApp().path, 'images'),
-                        fileName: `${this.appSrv.uniqueID()}.jpg`,
+                        saveAppPath: this.appSrv.cacheImageFolder,
+                        fileName: filename,
                     })
-                    .then((imageAsset) => {
+                    .then(imageAsset => {
                         if (this.isAdd) {
-                            this.items.push(...this.appSrv.saveFilesToCache(imageAsset));
+                            this.todo.imagesPaths.push(imageAsset.android);
                         } else {
-                            this.appSrv.addImages(this.appSrv.todos[this.editId].id, [imageAsset]);
+                            this.todo.imagesPaths.push(...this.appSrv.addImages(this.todo.id, [imageAsset]));
                         }
-                    }).catch((err) => {
-                    console.log("Errosr -> " + err.message);
-                });
+                    })
+                    .catch(err => {
+                        console.log('Error -> ' + err.message);
+                    });
             },
-            (err) => {
-                console.log("Error -> " + err.message);
+            err => {
+                console.log('Error -> ' + err.message);
             }
         );
-
     }
 
     deleteImage(index: number): void {
-        confirm("Delete image?").then(result => {
+        confirm('Delete image?').then(result => {
             if (result) {
                 this.appSrv.removeFilesByPath(this.images[index]);
                 this.images.splice(index, 1);
@@ -135,26 +115,25 @@ export class AddEditTodoComponent implements ComponentCanDeactivate {
     }
 
     onImageAdd(): void {
-        console.log('isAdd', this.isAdd);
         const context: ImagePicker = imagepicker.create({
-            mode: "multiple",
+            mode: 'multiple',
             mediaType: ImagePickerMediaType.Image,
         });
         context
-            .authorize().then((): Promise<ImageAsset[]> => context.present())
+            .authorize()
+            .then((): Promise<ImageAsset[]> => context.present())
             .then(selection => {
-                console.log('isAdd', this.isAdd);
                 if (this.isAdd) {
-                    this.items.push(...this.appSrv.saveFilesToCache(selection));
+                    this.todo.imagesPaths.push(...this.appSrv.saveFilesToCache(selection));
                 } else {
-                    this.appSrv.addImages(this.appSrv.todos[this.editId].id, selection);
+                    this.todo.imagesPaths.push(...this.appSrv.addImages(this.todo.id, selection));
                 }
             });
     }
 
     onSave(): void {
         this.isSaving = true;
-        this.appSrv.insert(this.title, this.body).subscribe((id): void => {
+        this.appSrv.insert(this.todo.title, this.todo.body).subscribe((id): void => {
             if (id) {
                 this.appSrv.copyCacheToDirectory(id);
                 this.router.navigate(['/']);
@@ -171,10 +150,10 @@ export class AddEditTodoComponent implements ComponentCanDeactivate {
 
     saveFields(): void {
         if (!this.isAdd) {
-            this.appSrv.update(this.appSrv.todos[this.editId].id, this.title, this.body).subscribe();
+            this.appSrv.update(this.todo.id, this.todo.title, this.todo.body).subscribe();
         } else {
-            setString("body", this.body);
-            setString("title", this.title);
+            setString('body', this.todo.body);
+            setString('title', this.todo.title);
         }
     }
 }

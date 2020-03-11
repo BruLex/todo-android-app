@@ -1,4 +1,4 @@
-C:\Users\deko7\IdeaProjects\native-script\NgProject\platforms\android\app\src\main\assets\app\bundle.js
-C:\Users\deko7\IdeaProjects\native-script\NgProject\platforms\android\app\src\main\assets\app\runtime.js
-C:\Users\deko7\IdeaProjects\native-script\NgProject\platforms\android\app\src\main\assets\app\tns-java-classes.js
-C:\Users\deko7\IdeaProjects\native-script\NgProject\platforms\android\app\src\main\assets\app\vendor.js
+C:\Users\deko7\IdeaProjects\native-script-todo-app\platforms\android\app\src\main\assets\app\bundle.js
+C:\Users\deko7\IdeaProjects\native-script-todo-app\platforms\android\app\src\main\assets\app\runtime.js
+C:\Users\deko7\IdeaProjects\native-script-todo-app\platforms\android\app\src\main\assets\app\tns-java-classes.js
+C:\Users\deko7\IdeaProjects\native-script-todo-app\platforms\android\app\src\main\assets\app\vendor.js

@@ -3,7 +3,7 @@
 <GridLayout>
     <ScrollView class="page">
         <StackLayout>
-            <CardView *ngFor="let item of todos; let i=index" class="card" elevation="40" radius="10">
+            <CardView *ngFor="let item of todos; let i = index" class="card" elevation="40" radius="10">
                 <AbsoluteLayout style="z-index: 0">
                     <Label
                             style="z-index: 2"
@@ -12,16 +12,18 @@
                             class="mdi"
                             fontSize="30"
                             (tap)="deleteTODO(i, item.id)"
-                            [text]="'mdi-delete' | fonticon">
+                            [text]="'mdi-delete' | fonticon"
+                    >
                     </Label>
                     <Label
                             style="z-index: 2"
                             left="20"
                             top="5"
                             fontSize="10"
-                            [text]="'Images: ' + item.imagesPaths.length">
+                            [text]="'Images: ' + item.imagesPaths.length"
+                    >
                     </Label>
-                    <StackLayout style="z-index: 1" class="card-layout" (tap)="openEdit(i)" width="100%">
+                    <StackLayout style="z-index: 1" class="card-layout" (tap)="openEdit(item.id)" width="100%">
                         <Label class="h2" [text]="item.title"></Label>
                         <Label class="body" textWrap="true" [text]="item.body"></Label>
                     </StackLayout>
@@ -29,9 +31,11 @@
             </CardView>
         </StackLayout>
     </ScrollView>
-    <Fab  class="fab-button"
-          text="+"
-          style="font-size: 14; font-weight: 200"
-          rippleColor="#f1f1f1"
-          (tap)="openAdd()"></Fab>
+    <Fab
+            class="fab-button"
+            text="+"
+            style="font-size: 14; font-weight: 200"
+            rippleColor="#f1f1f1"
+            (tap)="openAdd()"
+    ></Fab>
 </GridLayout>

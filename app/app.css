@@ -1,10 +1,10 @@
-@import "~@nativescript/theme/css/core.css";
-@import "~@nativescript/theme/css/purple.css";
+@import '~@nativescript/theme/css/core.css';
+@import '~@nativescript/theme/css/purple.css';
 
-Button.-primary {
+button.-primary {
     font-size: 18px;
 }
 
 .mdi {
-    font-family: "Material Icons", "MaterialIcons-Regular";
+    font-family: 'Material Icons', 'MaterialIcons-Regular';
 }
